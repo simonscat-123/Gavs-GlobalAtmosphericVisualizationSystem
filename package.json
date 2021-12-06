@@ -1,0 +1,51 @@
+{
+  "name": "gavs",
+  "version": "0.5.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build --report --mode development",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^6.0.1",
+    "@iconfu/svg-inject": "^1.2.3",
+    "@vue/composition-api": "^1.4.0",
+    "ant-design-vue": "2.2.1",
+    "babel-plugin-import": "^1.13.3",
+    "core-js": "^3.6.5",
+    "maptalks": "^1.0.0-beta.6",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0-0",
+    "vuex": "^4.0.0-0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/eslint-config-airbnb": "^5.0.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-vue": "^7.0.0",
+    "less": "3.0.0",
+    "less-loader": "5.0.0",
+    "lint-staged": "^9.5.0",
+    "mini-css-extract-plugin": "^2.4.5",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
+    "webpack-bundle-analyzer": "^4.5.0"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,vue}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
+}
