@@ -3,12 +3,11 @@
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api';
 import { ref, nextTick } from 'vue';
 import * as maptalks from 'maptalks/dist/maptalks.min';
 import mapConfig from '@/config/mapConfig';
 
-export default defineComponent({
+export default ({
   setup(props, { emit }) {
     let map
     nextTick(() => {

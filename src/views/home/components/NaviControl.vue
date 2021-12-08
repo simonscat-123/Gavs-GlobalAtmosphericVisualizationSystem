@@ -11,10 +11,9 @@
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
 import { ref } from 'vue'
 
-export default defineComponent({
+export default ({
   props: {
     mapBearing: Number,
   },

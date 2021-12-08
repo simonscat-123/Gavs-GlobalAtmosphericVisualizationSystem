@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api';
 import { ref, nextTick } from 'vue';
 import SVGInject from '@iconfu/svg-inject';
 import { cross } from '@/assets/icons/icons.js'
@@ -61,7 +60,7 @@ import imageAerosol from '@/assets/images/preview_aerosol@small.png'
 import imageTemp from '@/assets/images/preview_Temp2@small.png'
 import imageRain from '@/assets/images/preview_rain2@small.png'
 
-export default defineComponent({
+export default ({
   setup() {
     nextTick(() => {
       SVGInject(document.getElementsByClassName('closeBtn'));

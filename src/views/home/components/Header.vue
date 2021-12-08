@@ -17,12 +17,11 @@
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
 import SVGInject from '@iconfu/svg-inject'
 import { onMounted } from 'vue'
 import { camera, map } from '@/assets/icons/icons'
 
-export default defineComponent({
+export default ({
   setup() {
     // 要在dom创建好，img的url动态引入后再转换
     onMounted(() => {

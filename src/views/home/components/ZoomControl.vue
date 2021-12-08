@@ -11,12 +11,11 @@
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
 import { onMounted } from 'vue'
 import SVGInject from '@iconfu/svg-inject'
 import { plus, minus } from '@/assets/icons/icons.js'
 
-export default defineComponent({
+export default ({
   props: {
     mapLevel: Number,
   },
