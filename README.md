@@ -1,8 +1,9 @@
-# demo2
+# Gavs-GlobalAtmosphericVisualizationSystem
 
 ## Project setup
 ```
 npm install
+yarn install
 ```
 
 ### Compiles and hot-reloads for development
