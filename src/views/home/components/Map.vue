@@ -33,6 +33,43 @@ export default ({
         emit('getZoom', Number(map.getZoom().toFixed(1)))
       })
     })
+
+    // 底图、数据集切换
+    let basicMapLayer = null
+    let dataContentLayer = null
+    const switchMap = (param) => {
+      switch (param.boardName) {
+        case 'basicMap':
+          basicMapLayer = 0
+          console.log(param)
+          break;
+        case 'dataBoard':
+          dataContentLayer = 0
+          console.log(param)
+          // if (param.handle === true) {
+          //   if (!dataContentLayer) map.removeLayer(dataContentLayer)
+          //   dataContentLayer = new maptalks.WMSTileLayer('wms', {
+          //     urlTemplate: 'http://localhost:8000/geoserver/testAuto/wms',
+          //     crs: 'EPSG:3857',
+          //     layers: 'testAuto:testCSN',
+          //     styles: '',
+          //     version: '1.1.1',
+          //     format: 'image/png',
+          //     transparent: true,
+          //     opacity: 0.4,
+          //   })
+          //   map.addLayer(dataContentLayer)
+          // } else {
+          //   map.removeLayer(dataContentLayer)
+          //   dataContentLayer = null
+          // }
+
+          break;
+
+        default:
+          break;
+      }
+    }
     // 指北针交互
     const naviClick = (index) => {
       const nowBearing = map.getBearing()
@@ -74,6 +111,7 @@ export default ({
     return {
       naviClick,
       zoomClick,
+      switchMap,
     }
   },
 });

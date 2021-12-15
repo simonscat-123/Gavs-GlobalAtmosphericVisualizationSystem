@@ -2,7 +2,7 @@
   <div class="container"
     :style="{
       'width': clicked ? '300px' : '96px',
-      'height': clicked ? '500px' : '80px',
+      'height': clicked ? '400px' : '80px',
     }"
   >
       <div class="backgroundImage"
@@ -16,11 +16,11 @@
           'background-color': clicked ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0)',
           'overflow': clickedDelay ? 'visible' : 'hidden'
         }"
-        @click="boardClick()"
+        @click="boardClick(true)"
       >
         <div class="dataBoardHeader" v-show="clicked">
           <div class="dataBoardHeaderTitle" >{{data.title}}</div>
-          <div class="dataBoardHeaderCloseBtn" @click.stop="boardClose()">
+          <div class="dataBoardHeaderCloseBtn" @click.stop="boardClick(false)">
             <img class="CloseBtn" :src="cross" />
           </div>
         </div>
@@ -65,19 +65,25 @@ export default {
     const data = toRefs(props.data)
     const clicked = ref(false)
     const clickedDelay = ref(false)
-    const boardClick = () => {
+
+    const boardClick = (handle) => {
       // 这里点击Board的任意地方都会触发，
       // 不知道会出现什么问题，先在这记录下
-      clicked.value = true
-      setTimeout(() => {
-        clickedDelay.value = true
-      }, 500)
+      // true: open  false: close
+      if (handle) {
+        clicked.value = true
+        emit('dataBoardCilck', handle, props.data.id) // 让其他Board自动关闭
+        setTimeout(() => {
+          clickedDelay.value = true
+        }, 500)
+      } else {
+        clicked.value = false
+        clickedDelay.value = false
+      }
     }
-    const boardClose = () => {
-      clicked.value = false
-      clickedDelay.value = false
-    }
+
     // 项目点击
+    // TODO: 此处如果在完全打开前点击关闭，则container的overflow hidden会失效。
     const contentClick = (id) => {
       data.dataContents.value.forEach((content) => {
         if (content.id !== id) {
@@ -85,7 +91,7 @@ export default {
           return false
         }
         content.show = !content.show
-        emit('contentClick', { id: `${data.id.value}-${id}`, handle: content.show })
+        emit('contentClick', { boardName: data.name.value, contentName: content.name, handle: content.show })
         return true
       });
     }
@@ -95,7 +101,6 @@ export default {
       boardClick,
       cross,
       preview,
-      boardClose,
       contentClick,
     }
   },
@@ -104,11 +109,11 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
+  position: relative;
+  margin: 0 4px;
+  // bottom: 0;
+  width: 80px;
+  height: 96px;
   border-radius: 8px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   transition: width 0.5s, height 0.5s;
