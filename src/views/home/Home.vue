@@ -8,10 +8,16 @@
       @getZoom='getZoom'
     />
   </div>
-  <div class="dataBoardCollectionPull">
-    <img class="pullBtn" :src="chevronUp"/>
-  </div>
-  <div class="dataBoardCollection">
+  <DataSlider/>
+  <div class="dataBoardCollectionContainer"
+    :style="{ 'bottom': dataBoardCollectionPullClicked ? '-80px' : '16px' }">
+    <div class="dataBoardCollectionPull"
+      :style="{
+        'transform': dataBoardCollectionPullClicked ? 'translate(-50%, 10%) rotate(0deg)' : 'translate(-50%, 10%) rotate(180deg)' }"
+      @click="dataBoardCollectionPullClick()">
+      <img class="pullBtn" :src="chevronUp" />
+    </div>
+    <div class="dataBoardCollection">
       <DataBoard
         v-for="(dataBoard) in dataCollection"
         :key="dataBoard.id"
@@ -19,7 +25,7 @@
         :ref="dataBoardRefs"
         @contentClick='dataContentClick'
         @dataBoardCilck='dataBoardCilck' />
-
+    </div>
   </div>
 
   <div class="controlerContainer">
@@ -51,6 +57,7 @@ import imageRain from '@/assets/images/preview_rain2@small.png'
 import imagePreviewMaptype from '@/assets/images/preview_maptype2.png'
 import imagePreviewData from '@/assets/images/preview_aerosol.jpeg'
 import { chevronUp } from '@/assets/icons/icons.js'
+import DataSlider from './components/DataSlider.vue'
 
 export default ({
   components: {
@@ -59,6 +66,7 @@ export default ({
     NaviControl,
     ZoomControl,
     DataBoard,
+    DataSlider,
   },
   setup() {
     onMounted(() => {
@@ -116,9 +124,11 @@ export default ({
     // 初始化dataBoard引用
     const dataBoardRefsArray = []
     const dataBoardRefs = (dataBoard) => {
+      if (dataBoardRefsArray.length === dataCollection.value.length) return false
       if (dataBoard) {
         dataBoardRefsArray.push(dataBoard)
       }
+      return true
     }
 
     const dataBoardCilck = (handle, id) => {
@@ -128,6 +138,14 @@ export default ({
         dataBoard.boardClick(false)
         return true
       })
+    }
+    const dataBoardReactClass = {
+
+    }
+    const dataBoardCollectionPullClicked = ref(false)
+    const dataBoardCollectionPullClick = () => {
+      console.log(dataBoardCollectionPullClicked.value)
+      dataBoardCollectionPullClicked.value = !dataBoardCollectionPullClicked.value
     }
     return {
       naviClick,
@@ -143,6 +161,8 @@ export default ({
       dataBoardCilck,
       dataBoardRefs,
       chevronUp,
+      dataBoardCollectionPullClick,
+      dataBoardCollectionPullClicked,
     }
   },
 })
@@ -170,29 +190,48 @@ export default ({
   align-items: center;
 }
 
+.dataBoardCollectionContainer {
+  position: absolute;
+  width: auto;
+  height: 80px;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  transition: bottom 0.5s;
+}
+
 .dataBoardCollectionPull {
   position: absolute;
   height: 24px;
   width: 24px;
-  bottom: 90px;
+  bottom: 80px;
   left: 50%;
   border-radius: 50%;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  background-color: rgba(0, 0, 0, 0.19);
-  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.17);
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 15px;
+  transform: translate(-50%, 10%) rotate(180deg);
+  transition: transform 0.5s;
   .pullBtn {
     width: 100%;
     height: 100%;
+    transform: translateY(-10%);
+    &:hover{
+      cursor: pointer;
+      color: rgb(43, 130, 255);;
+    }
   }
 }
 
 .dataBoardCollection {
-  position: absolute;
+  position: relative;
   height: 80px;
   width: auto;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0px;
+  // left: 50%;
+  // transform: translateX(-50%);
+  // box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px, inset rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  // border-radius: 8px;
+  // overflow: hidden;
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
