@@ -1,5 +1,8 @@
 # Gavs-GlobalAtmosphericVisualizationSystem
 
+## Note:
+This project is under heavy development, many features are not perfect yet...
+
 ## Project setup
 ```
 npm install
@@ -15,11 +18,3 @@ npm run serve
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
