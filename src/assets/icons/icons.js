@@ -5,6 +5,8 @@ import cross from './cross.svg'
 import map from './map.svg'
 import preview from './preview.svg'
 import chevronUp from './chevron-up.svg'
+import arrow from './arrow-right.svg'
+import arrowThin from './arrow-thin-right.svg'
 
 export {
   plus,
@@ -14,4 +16,6 @@ export {
   map,
   preview,
   chevronUp,
+  arrow,
+  arrowThin,
 }
