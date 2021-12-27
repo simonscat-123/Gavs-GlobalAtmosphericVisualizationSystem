@@ -2,20 +2,24 @@
   <Header/>
 
   <div class="map-container">
-    <Map
-      ref="map"
+    <Map ref="map"
       @getBearing='getBearing'
       @getZoom='getZoom'
     />
   </div>
-  <DataSlider/>
+  <!-- <DataSlider/> -->
   <div class="dataBoardCollectionContainer"
     :style="{ 'bottom': dataBoardCollectionPullClicked ? '-80px' : '16px' }">
-    <div class="dataBoardCollectionPull"
-      :style="{
-        'transform': dataBoardCollectionPullClicked ? 'translate(-50%, 10%) rotate(0deg)' : 'translate(-50%, 10%) rotate(180deg)' }"
-      @click="dataBoardCollectionPullClick()">
-      <img class="pullBtn" :src="chevronUp" />
+    <div class="dataBoardCollectionPull">
+      <div class="datePickerContainer">
+        <DatePicker/>
+      </div>
+      <div class="pullBtnContainer"
+        :style="{
+          'transform': dataBoardCollectionPullClicked ? 'rotate(0deg)' : 'rotate(180deg)' }"
+        @click="dataBoardCollectionPullClick()">
+        <img class="pullBtn" :src="chevronUp" />
+      </div>
     </div>
     <div class="dataBoardCollection">
       <DataBoard
@@ -58,6 +62,7 @@ import imagePreviewMaptype from '@/assets/images/preview_maptype2.png'
 import imagePreviewData from '@/assets/images/preview_aerosol.jpeg'
 import { chevronUp } from '@/assets/icons/icons.js'
 import DataSlider from './components/DataSlider.vue'
+import DatePicker from './components/DatePicker.vue'
 
 export default ({
   components: {
@@ -67,6 +72,7 @@ export default ({
     ZoomControl,
     DataBoard,
     DataSlider,
+    DatePicker,
   },
   setup() {
     onMounted(() => {
@@ -124,6 +130,7 @@ export default ({
     // 初始化dataBoard引用
     const dataBoardRefsArray = []
     const dataBoardRefs = (dataBoard) => {
+      // 这个refs在每次组件重绘的时候都会调用一次，可能会产生额外的性能负担
       if (dataBoardRefsArray.length === dataCollection.value.length) return false
       if (dataBoard) {
         dataBoardRefsArray.push(dataBoard)
@@ -189,7 +196,7 @@ export default ({
   justify-content: flex-start;
   align-items: center;
 }
-
+// 以下内容在后期需要做成component
 .dataBoardCollectionContainer {
   position: absolute;
   width: auto;
@@ -203,21 +210,37 @@ export default ({
 .dataBoardCollectionPull {
   position: absolute;
   height: 24px;
-  width: 24px;
+  width: auto;
   bottom: 80px;
   left: 50%;
-  border-radius: 50%;
+  border-radius: 8px 8px 0 0;
   background-color: rgba(0, 0, 0, 0.17);
   box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 15px;
-  transform: translate(-50%, 10%) rotate(180deg);
-  transition: transform 0.5s;
-  .pullBtn {
-    width: 100%;
-    height: 100%;
-    transform: translateY(-10%);
-    &:hover{
-      cursor: pointer;
-      color: rgb(43, 130, 255);;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  .datePickerContainer {
+    position: relative;
+    height: 24px;
+    width: auto;
+    margin: 0 8px;
+  }
+  .pullBtnContainer {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.5s;
+    margin: 0 0 0 4px;
+    .pullBtn {
+      width: 100%;
+      height: 100%;
+      &:hover{
+        cursor: pointer;
+        color: rgb(43, 130, 255);;
+      }
     }
   }
 }
@@ -227,11 +250,6 @@ export default ({
   height: 80px;
   width: auto;
   bottom: 0px;
-  // left: 50%;
-  // transform: translateX(-50%);
-  // box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px, inset rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  // border-radius: 8px;
-  // overflow: hidden;
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
