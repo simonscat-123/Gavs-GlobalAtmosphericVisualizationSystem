@@ -32,11 +32,6 @@ export default {
       animation-timing-function: cubic-bezier(.25, .1, .25, .1);
   }
 }
-@keyframes rainbow {
-  0% { background: #c00; }
-  50% { background: orange; }
-  100% { background: yellowgreen; }
-}
 .sliderContainer {
   position: absolute;
   width: 800px;
