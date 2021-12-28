@@ -12,19 +12,37 @@ const updateDayArray = (year, month) => {
     const dayObj = {
       available: true,
       showDay: 0,
+      month: 0,
+      year: 0,
+      show: false,
     }
     if (i < firstDayWeekDay) {
       dayObj.available = false
       dayObj.showDay = preMonthLastDay - firstDayWeekDay + i + 1
+      if (month === 1) {
+        dayObj.month = 12
+        dayObj.year = year - 1
+      } else {
+        dayObj.month = month - 1
+        dayObj.year = year
+      }
     } else if (i < lastDayWeekDate + firstDayWeekDay) {
       dayObj.available = true
       dayObj.showDay = thisMonthDay
+      dayObj.month = month
+      dayObj.year = year
       thisMonthDay++
     } else {
       dayObj.available = false
       dayObj.showDay = i - lastDayWeekDate - firstDayWeekDay + 1
+      if (month === 12) {
+        dayObj.month = 1
+        dayObj.year = year + 1
+      } else {
+        dayObj.month = month + 1
+        dayObj.year = year
+      }
     }
-
     const row = Math.floor(i / 7)
     pDayPickerArray[row].push(dayObj)
   }
@@ -53,11 +71,31 @@ const convertWeekday = (weekday) => {
   return str
 }
 
-const updateShowDateObj = () => {
+const updateShowDateObj = (showDate, newDate) => {
+  Object.keys(newDate).forEach((prop) => {
+    showDate[prop] = newDate[prop]
+  });
+  // 不用return
+}
 
+const updateNowShowDate = (showDate, nowShowDate) => {
+  for (let row = 0; row < 6; row++) {
+    for (let col = 0; col < 7; col++) {
+      // if (showDate.value[row][col])
+      if (showDate[row][col].year === nowShowDate.year
+        && showDate[row][col].month === nowShowDate.month
+        && showDate[row][col].showDay === nowShowDate.showDay) {
+        showDate[row][col].show = true
+      } else if (showDate[row][col].show === true) {
+        showDate[row][col].show = false
+      }
+    }
+  }
 }
 
 export {
   updateDayArray,
   convertWeekday,
+  updateShowDateObj,
+  updateNowShowDate,
 }
