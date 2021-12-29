@@ -93,9 +93,18 @@ const updateNowShowDate = (showDate, nowShowDate) => {
   }
 }
 
+const updateYearArray = (year) => {
+  const pYearPickerArray = []
+  const minYear = Math.floor(year / 10) * 10
+  pYearPickerArray.push([minYear, minYear + 1, minYear + 2, minYear + 3, minYear + 4])
+  pYearPickerArray.push([minYear + 5, minYear + 6, minYear + 7, minYear + 8, minYear + 9])
+  return pYearPickerArray
+}
+
 export {
   updateDayArray,
   convertWeekday,
   updateShowDateObj,
   updateNowShowDate,
+  updateYearArray,
 }
