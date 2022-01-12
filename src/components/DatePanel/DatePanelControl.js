@@ -71,6 +71,39 @@ const convertWeekday = (weekday) => {
   return str
 }
 
+const convertMonth = (monthStr) => {
+  let num = 0
+  switch (monthStr) {
+    case '一月': num = 1
+      break;
+    case '二月': num = 2
+      break;
+    case '三月': num = 3
+      break;
+    case '四月': num = 4
+      break;
+    case '五月': num = 5
+      break;
+    case '六月': num = 6
+      break;
+    case '七月': num = 7
+      break;
+    case '八月': num = 8
+      break;
+    case '九月': num = 9
+      break;
+    case '十月': num = 10
+      break;
+    case '十一月': num = 11
+      break;
+    case '十二月': num = 12
+      break;
+    default:
+      break;
+  }
+  return num
+}
+
 const updateShowDateObj = (showDate, newDate) => {
   Object.keys(newDate).forEach((prop) => {
     showDate[prop] = newDate[prop]
@@ -78,6 +111,7 @@ const updateShowDateObj = (showDate, newDate) => {
   // 不用return
 }
 
+// 更新daypicker的表格数据
 const updateNowShowDate = (showDate, nowShowDate) => {
   for (let row = 0; row < 6; row++) {
     for (let col = 0; col < 7; col++) {
@@ -104,6 +138,7 @@ const updateYearArray = (year) => {
 export {
   updateDayArray,
   convertWeekday,
+  convertMonth,
   updateShowDateObj,
   updateNowShowDate,
   updateYearArray,

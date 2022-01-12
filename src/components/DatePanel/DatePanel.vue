@@ -2,8 +2,14 @@
   <div class="datePickerWrapper">
     <div class="pickerHeader">
       <svg class="leftBtn" @click="datePickerChange(0)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 92 92"><g fill="currentColor" class="nc-icon-wrapper"><path id="XMLID_512_" d="M82.8 48.8l-24.9 25c-.8.8-1.8 1.2-2.8 1.2-1 0-2-.4-2.8-1.2-1.6-1.6-1.6-4.1 0-5.7L70.4 50H12c-2.2 0-4-1.8-4-4s1.8-4 4-4h58.4L52.2 23.8c-1.6-1.6-1.6-4.1 0-5.7 1.6-1.6 4.1-1.6 5.7 0l24.9 25c1.6 1.6 1.6 4.2 0 5.7z"></path></g></svg>
-      <span class="dayPickerHeaderCurrYear">{{showDate.dayPickerYear}} 年</span>
-      <span class="dayPickerHeaderCurrMonth" v-show="pickerType === 0">{{showDate.dayPickerMonth}} 月</span>
+      <span class="dayPickerHeaderCurrYear" 
+        v-show="pickerType === 0 || pickerType === 1"
+        @click="dayPickerHeaderCurrYearClick()">{{showDate.dayPickerYear}} 年</span>
+      <span class="dayPickerHeaderCurrMonth" 
+        v-show="pickerType === 0"
+        @click="dayPickerHeaderCurrMonthClick()">{{showDate.dayPickerMonth}} 月</span>
+      <span class="pickerHeaderCurrYearRange" 
+        v-show="pickerType === 2">{{showDate.yearPickerRangeMin}} - {{showDate.yearPickerRangeMax}}</span>
       <svg class="rightBtn" @click="datePickerChange(1)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 92 92"><g fill="currentColor" class="nc-icon-wrapper"><path id="XMLID_512_" d="M82.8 48.8l-24.9 25c-.8.8-1.8 1.2-2.8 1.2-1 0-2-.4-2.8-1.2-1.6-1.6-1.6-4.1 0-5.7L70.4 50H12c-2.2 0-4-1.8-4-4s1.8-4 4-4h58.4L52.2 23.8c-1.6-1.6-1.6-4.1 0-5.7 1.6-1.6 4.1-1.6 5.7 0l24.9 25c1.6 1.6 1.6 4.2 0 5.7z"></path></g></svg>
     </div>
     <!-- 日picker -->
@@ -21,7 +27,7 @@
                 dayNotAvaliable: !day.available,
                 dayAvaliableShow: day.show}"
               v-for="day in item" :key="day"
-              @click="dayPickerDateClick(day)">
+              @click="datePickerDateClick(day)">
                 <span> {{day.showDay}} </span>
             </td>
           </tr>
@@ -34,7 +40,9 @@
       <table class="monthTable">
         <tbody>
           <tr class="monthTableRow" v-for="item in monthPickerArray" :key="item">
-            <td class="monthAvaliable" v-for="month in item" :key="month">
+            <td class="monthAvaliable" 
+            v-for="month in item" :key="month"
+            @click="datePickerDateClick(month)">
               <span>{{month}}</span>
             </td>
           </tr>
@@ -47,7 +55,9 @@
       <table class="yearTable">
         <tbody>
           <tr class="yearTableRow" v-for="item in yearPickerArray" :key="item">
-            <td class="yearAvaliable" v-for="year in item" :key="year">
+            <td class="yearAvaliable" 
+            v-for="year in item" :key="year"
+            @click="datePickerDateClick(year)">
               <span>{{year}}</span>
             </td>
           </tr>
@@ -59,27 +69,36 @@
 
 <script>
 import { ref } from 'vue'
-import { updateDayArray, updateNowShowDate, updateShowDateObj, updateYearArray } from './DatePanelControl'
+import { updateDayArray, updateNowShowDate, updateShowDateObj, updateYearArray, convertMonth } from './DatePanelControl'
 
 export default {
   setup() {
+    // 变换日期选择板 0 day 1 month 2 year
+    const pickerType = ref(0)
+    const switchPicker = (type) => {
+      pickerType.value = type
+    }
     // 当前展示的日期 showDate
     const showDate = ref({
       showDay: 0,
-      month: 0,
-      year: 0,
-      dayPickerMonth: 0,
-      dayPickerYear: 0,
+      month: 0, // 实际显示的月
+      year: 0, // 实际显示的年
+      dayPickerMonth: 0, // 用于组件内临时选择
+      dayPickerYear: 0, // 用于组件内临时选择
+      yearPickerRangeMin: 0,
+      yearPickerRangeMax: 0,
     })
 
     const nowDate = new Date()
     // 更新 showDate
     updateShowDateObj(showDate.value, {
       showDay: nowDate.getDate(),
-      month: nowDate.getMonth(),
+      month: nowDate.getMonth() + 1,
       year: nowDate.getFullYear(),
-      dayPickerMonth: nowDate.getMonth(),
+      dayPickerMonth: nowDate.getMonth() + 1,
       dayPickerYear: nowDate.getFullYear(),
+      yearPickerRangeMin: 2020,
+      yearPickerRangeMax: 2029,
     })
 
     // 初始化年、月、日期表
@@ -93,52 +112,112 @@ export default {
     const datePickerChange = (handle) => {
       let newMonth = 0
       let newYear = 0
-      if (handle === 0) { // leftBtn clicked
-        if (showDate.value.dayPickerMonth === 1) {
-          newMonth = 12
-          newYear = showDate.value.dayPickerYear - 1
-        } else {
-          newMonth = showDate.value.dayPickerMonth - 1
-          newYear = showDate.value.dayPickerYear
-        }
-      } else if (handle === 1) { // rightBtn clicked
-        if (showDate.value.dayPickerMonth === 12) {
-          newMonth = 1
-          newYear = showDate.value.dayPickerYear + 1
-        } else {
-          newMonth = showDate.value.dayPickerMonth + 1
-          newYear = showDate.value.dayPickerYear
-        }
+      switch (pickerType.value) {
+        case 0:
+          if (handle === 0) { // leftBtn clicked
+            if (showDate.value.dayPickerMonth === 1) {
+              newMonth = 12
+              newYear = showDate.value.dayPickerYear - 1
+            } else {
+              newMonth = showDate.value.dayPickerMonth - 1
+              newYear = showDate.value.dayPickerYear
+            }
+          } else if (handle === 1) { // rightBtn clicked
+            if (showDate.value.dayPickerMonth === 12) {
+              newMonth = 1
+              newYear = showDate.value.dayPickerYear + 1
+            } else {
+              newMonth = showDate.value.dayPickerMonth + 1
+              newYear = showDate.value.dayPickerYear
+            }
+          }
+          updateShowDateObj(showDate.value, {
+            dayPickerMonth: newMonth,
+            dayPickerYear: newYear,
+          })
+          dayPickerArray.value = updateDayArray(newYear, newMonth)
+          updateNowShowDate(dayPickerArray.value, showDate.value)
+          break;
+
+        case 1:
+          if (handle === 0) {
+            updateShowDateObj(showDate.value, {
+              dayPickerYear: showDate.value.dayPickerYear - 1,
+            })
+          } else if (handle === 1) {
+            updateShowDateObj(showDate.value, {
+              dayPickerYear: showDate.value.dayPickerYear + 1,
+            })
+          }
+          break;
+
+        case 2:
+          if (handle === 0) {
+            yearPickerArray.value = updateYearArray(showDate.value.year -= 10)
+          } else if (handle === 1) {
+            yearPickerArray.value = updateYearArray(showDate.value.year += 10)
+          }
+          updateShowDateObj(showDate.value, {
+            yearPickerRangeMin: yearPickerArray.value[0][0],
+            yearPickerRangeMax: yearPickerArray.value[1][4],
+          })
+          break;
+      
+        default:
+          break;
       }
-      showDate.value.dayPickerMonth = newMonth
-      showDate.value.dayPickerYear = newYear
-      dayPickerArray.value = updateDayArray(newYear, newMonth)
-      updateNowShowDate(dayPickerArray.value, showDate.value)
     }
     // 点击具体日期
-    const dayPickerDateClick = (day) => {
-      updateShowDateObj(showDate.value, {
-        showDay: day.showDay,
-        month: day.month,
-        year: day.year,
-      })
-      updateNowShowDate(dayPickerArray.value, showDate.value)
+    const datePickerDateClick = (date) => {
+      switch (pickerType.value) {
+        case 0:
+          updateShowDateObj(showDate.value, {
+            showDay: date.showDay,
+            month: date.month,
+            year: date.year,
+          })
+          updateNowShowDate(dayPickerArray.value, showDate.value)
+          break;
+        case 1:
+          updateShowDateObj(showDate.value, {
+            dayPickerMonth: convertMonth(date),
+          })
+          dayPickerArray.value = updateDayArray(showDate.value.dayPickerYear, convertMonth(date))
+          updateNowShowDate(dayPickerArray.value, showDate.value)
+          switchPicker(0)
+          break;
+        case 2:
+          // console.log(date)
+          updateShowDateObj(showDate.value, {
+            dayPickerYear: date,
+          })
+          dayPickerArray.value = updateDayArray(date, showDate.value.dayPickerMonth)
+          updateNowShowDate(dayPickerArray.value, showDate.value)
+          switchPicker(0)
+          break;
+        default:
+          break;
+      }
     }
-    // 变换日期选择板 0 day 1 month 2 year
-    const pickerType = ref(0)
-    const switchPicker = (type) => {
-      pickerType.value = type
+    const dayPickerHeaderCurrYearClick = () => {
+      switchPicker(2)
     }
-    switchPicker(2)
+    const dayPickerHeaderCurrMonthClick = () => {
+      if (pickerType.value !== 1) {
+        switchPicker(1)
+      }
+    }
     return {
       showDate,
       dayPickerArray,
       datePickerChange,
-      dayPickerDateClick,
+      datePickerDateClick,
       monthPickerArray,
       yearPickerArray,
       pickerType,
       switchPicker,
+      dayPickerHeaderCurrYearClick,
+      dayPickerHeaderCurrMonthClick,
     }
   },
 }
@@ -263,7 +342,7 @@ export default {
     position: relative;
     height: 30px;
     border: 1px solid #f0f0f0;
-    width: 25%;
+    width: 20%;
     text-align: center;
     cursor: pointer;
     & span {
